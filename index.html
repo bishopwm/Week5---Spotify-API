@@ -1,0 +1,52 @@
+<html>
+	<head>
+	  <title>Spotify Artist Search</title>
+	  <style>
+		img {
+			width: 25%;
+		}
+	  </style>
+	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+	</head>
+	<body>
+	<h1 class="complex-heading">
+	    Spotify Artist Search
+	</h1>
+
+	  <form>
+	  	<input type="text" name="q" placeholder="Artist Name">
+	    <button class="js-submit" type="submit" id="submit">SUBMIT</button>
+	  </form>
+
+	  <ul class="artist-list"></ul>
+
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+		<script>
+
+			   var displayInfo = function(infoReceived) {
+			   	$('.artist-list').append("<img src="+infoReceived.artists.items[0].images[0].url+">");
+			   	infoReceived.artists.items.forEach(function(singer) { 
+			   		$('.artist-list').append("<li>"+singer.name+"</li>")
+			   		})
+
+			   }
+
+			  $('#submit').on('click', function(event){
+			      event.preventDefault();
+
+			      var searchArtist = $('form').serialize();
+
+			      var requestArtist = $.get('https://api.spotify.com/v1/search?type=artist&' + searchArtist);
+			      requestArtist.done(displayInfo);
+		      
+		 	 });
+
+
+
+
+
+		</script>
+	</body>
+</html>
