@@ -1,52 +1,59 @@
 <html>
-	<head>
-	  <title>Spotify Artist Search</title>
-	  <style>
-		img {
-			width: 25%;
-		}
-	  </style>
-	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<head>
+	<title>Spotify Artist Search</title>
+	<style>
+	img {
+		width: 25%;
+	}
+	</style>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
-	</head>
-	<body>
+</head>
+<body>
 	<h1 class="complex-heading">
-	    Spotify Artist Search
+		Spotify Artist Search
 	</h1>
 
-	  <form>
-	  	<input type="text" name="q" placeholder="Artist Name">
-	    <button class="js-submit" type="submit" id="submit">SUBMIT</button>
-	  </form>
+	<form>
+		<input type="text" name="q" placeholder="Artist Name">
+		<button class="js-submit" type="submit" id="submit">SUBMIT</button>
+	</form>
 
-	  <ul class="artist-list"></ul>
+	<ul class="artist-list"></ul>
+	<ul class="album-list"></ul>
 
-		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 
-		<script>
+	<script>
+	var displayInfo = function(infoReceived) {
+		$('.artist-list').append("<img src="+infoReceived.artists.items[0].images[0].url+">");
+		infoReceived.artists.items.forEach(function(singer) {
+			$('.artist-list').append("<li>" + "<a href='#' data-id=" + singer.id + ">" + singer.name + "</a></li>");
+		});
+	}
 
-			   var displayInfo = function(infoReceived) {
-			   	$('.artist-list').append("<img src="+infoReceived.artists.items[0].images[0].url+">");
-			   	infoReceived.artists.items.forEach(function(singer) { 
-			   		$('.artist-list').append("<li>"+singer.name+"</li>")
-			   		})
+	$('form').on('submit', function(event){
+		event.preventDefault();
+		var searchArtist = $('form').serialize();
+		var requestArtist = $.get('https://api.spotify.com/v1/search?type=artist&' + searchArtist);
+		requestArtist.done(displayInfo);  
+	});
 
-			   }
+	var displayAlbum = function(albums) {
+		albums.items.forEach(function(album) {
+		$('.album-list').append("<li>" + album.name + "</li>");
+		});
+		
+	}
 
-			  $('#submit').on('click', function(event){
-			      event.preventDefault();
+	$('.artist-list').on('click', 'a', function(event) {
+		event.preventDefault();
+		var searchArtist = $('form').serialize();
+		var artistID = $(event.currentTarget).attr('data-id');
+		var requestID = $.get('https://api.spotify.com/v1/artists/' + artistID + '/albums');
+		requestID.done(displayAlbum)
+	})
 
-			      var searchArtist = $('form').serialize();
-
-			      var requestArtist = $.get('https://api.spotify.com/v1/search?type=artist&' + searchArtist);
-			      requestArtist.done(displayInfo);
-		      
-		 	 });
-
-
-
-
-
-		</script>
-	</body>
+	</script>
+</body>
 </html>
