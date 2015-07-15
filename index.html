@@ -21,6 +21,7 @@
 
 	<ul class="artist-list"></ul>
 	<ul class="album-list"></ul>
+	<ul class="track-list"></ul>
 
 	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 
@@ -41,7 +42,7 @@
 
 	var displayAlbum = function(albums) {
 		albums.items.forEach(function(album) {
-		$('.album-list').append("<li>" + album.name + "</li>");
+		$('.album-list').append("<li>" + "<a href='#' class='album-link' data-id=" + album.id + ">" + album.name + "</a></li>");
 		});
 		
 	}
@@ -51,8 +52,24 @@
 		var searchArtist = $('form').serialize();
 		var artistID = $(event.currentTarget).attr('data-id');
 		var requestID = $.get('https://api.spotify.com/v1/artists/' + artistID + '/albums');
-		requestID.done(displayAlbum)
-	})
+		requestID.done(displayAlbum);
+	});
+
+	var displayTracks = function(tracks) {
+		tracks.items.forEach(function(track) {
+			$('.track-list').append("<li>" + track.name + "</li>");
+		});
+	}
+
+	$('.album-list').on('click', 'a.album-link', function(event) {
+		event.preventDefault();
+		var searchArtist = $('form').serialize();
+		var albumID = $(event.currentTarget).attr('data-id');
+		var requestAlbumID = $.get('https://api.spotify.com/v1/albums/' + albumID + '/tracks');
+		requestAlbumID.done(displayTracks);
+	});
+
+
 
 	</script>
 </body>
