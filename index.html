@@ -39,6 +39,15 @@
 		.artist-list {
 			list-style-type: none;
 		}
+		.album-list {
+			list-style-type: none;
+		}
+		.track-list {
+			list-style-type: none;
+		}
+		.insta-list {
+			list-style-type: none;
+		}
 		.head_p {
 			padding: 1em;
 			margin: auto;
@@ -72,9 +81,10 @@
 	      </div>
 	      <div class="modal-body1">
 	        <p>
+	        	<a href='#' class="insta-link">See trending Instagram photos</a>
+
 	        	<ul class="artist-list"></ul>
-	        </p>
-	      </div>
+	        </p>	      </div>
 	      <div class="modal-body2">
 	      	<h3>Albums by this Artist:</h3>
 	      		<ul class="album-list" data-id="album_visibility" style="visibility: visible"></ul>
@@ -86,6 +96,10 @@
 				           <h3 class="modal-title">Play Track</h3>
 				           <audio class="player" autoplay controls="controls"></audio>
 					</div>
+		  </div>
+		  <div class="modal-body4">
+		  	<h3>Trending Instas</h3>
+		  		<ul class="insta-list"</ul>
 		  </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -166,6 +180,24 @@
 		$('.player').empty();
 		var trackURL = $(event.currentTarget).attr('data-url');
 		$('.player').prop('src', trackURL);
+
+	});
+
+	var displayInsta = function(instas) {
+		$('.insta-list').append("<li><img src=" + instas.data[0].images.standard_resolution.url + "></li>");
+		goTo($('.modal-body4'))
+	}
+
+
+	$('.insta-link').on('click', function(event) {
+		event.preventDefault();
+		var InstaID = $('[name=q]').val();
+		$.ajax({
+			url: 'https://api.instagram.com/v1/tags/' + InstaID + '/media/recent?access_token=199128569.1fb234f.d04508075cac46919a879ec37861e24e',
+			type: 'GET',
+			dataType: 'jsonp',
+			success: displayInsta
+		})
 
 	});
 
