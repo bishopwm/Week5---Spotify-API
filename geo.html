@@ -1,6 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geolocation stuff</title>
+</head>
+<body>
+
 <button id="save-location">I was here</button>
 <button id="show-locations">Where was I?</button>
 <button id="clear-locations">Clear my tracks</button>
+<div id="map-canvas"></div>
 <ul id="location-list">
 
     
@@ -13,19 +22,26 @@
 
     </div>
 
+    
+    
+
 
 </ul>
 
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<style type="text/css">html, body, #map-canvas { height: 100%; width: 100%; margin: 0; padding: 0;}</style>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyxrAna7uDx5gzuAN2V3Ws3Y0dHfsX4-A"></script>
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
+
+
 
     if ("geolocation" in navigator) {
         addEventListeners();
     } else {
         alert("Geolocation is not available")
-    }
+    };
 
     function addEventListeners() {
         var saveButton = document.getElementById('save-location');
@@ -34,7 +50,7 @@
         showButton.addEventListener('click', showLocations);
         var clearButton = document.getElementById('clear-locations');
         clearButton.addEventListener('click', clearLocations);
-    }
+    };
 
     var options = {
         enableHighAccuracy: true 
@@ -50,7 +66,7 @@
         initialize();
         function initialize() {
             geocoder = new google.maps.Geocoder();
-        }
+        };
 
         var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         geocoder.geocode({
@@ -59,42 +75,68 @@
 
             document.getElementById("test").innerHTML = '' + (results[4].formatted_address); + ''
         })
- //console.log(window.localStorage.getItem("position"))
- //console.log(position.coords.latitude + ',' + position.coords.longitude)
-// console.log(position.timestamp)
-//console.log(window.localStorage.getItem("position", position.coords.latitude + ',' + position.coords.longitude))
-console.log(window.localStorage.getItem("position.timestamp", position.timestamp))
-}
+
+
+        console.log(window.localStorage.getItem("position.timestamp", position.timestamp))
+    };
 
 function onError(error) {
     console.log("Getting location failed: " + error);
-}
+};
 
 
 function getLocation() {
     console.log("getting your location")
     navigator.geolocation.getCurrentPosition(onLocation, onError, options);
 
-} 
+}; 
  // you know how to do geoloation already, right??
  // in the success handler, save the location in local storage
 
 
- function showLocations() {
-     var pos = window.localStorage.getItem("position")
-     var time = window.localStorage.getItem("position.timestamp")
-     $('#location-list').append('<li>Position: ' + pos + '</li>')
-     $('#location-list').append('<li>Timestamp: ' + time + '</li>')
+function showLocations() {
+     var pos = window.localStorage.getItem("position");
+     var time = window.localStorage.getItem("position.timestamp");
+     $('#location-list').append('<li>Position: ' + pos + '</li>');
+     $('#location-list').append('<li>Timestamp: ' + time + '</li>');
 
  // retrieve the locations from local storage and add them to the DOM
-}
+};
 
 function clearLocations() {
-    console.log('All cleared!')
+    console.log('All cleared!');
  // remove the locations from local storage
-}
+};
+
+ 
+
+
+window.MyMap = function() {
+
+    
+
+    var mapOptions = {
+      zoom: 4, 
+      center: new google.maps.LatLng(41.3917782, 2.1772809999999936)
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    };
+
+    window.myMap = new MyMap();
+
+
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(41.3917782, 2.1772809999999936),
+      map: map
+});
+
+            
+
 
 
 
 
 </script>
+
+</body>
+</html>
